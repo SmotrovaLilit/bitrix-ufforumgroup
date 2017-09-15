@@ -1,0 +1,19 @@
+{
+  "name": "SmotrovaLilit/bitrix-ufforumgroup",
+  "description": "Bitrix module for user field bind to forum group",
+  "type": "bitrix-d7-module",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Smotrova Lilit",
+      "email": "lilit2990@gmail.com"
+    }
+  ],
+  "extra": {
+    "installer-name": "smotrovalilit.ufforumgroup"
+  },
+  "require": {
+    "php": ">=5.3.0",
+    "composer/installers": "~1"
+  }
+}
