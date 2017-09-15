@@ -1,5 +1,5 @@
 {
-  "name": "smotrova-lilit/bitrix-ufforumgroup",
+  "name": "smotrovalilit/bitrix-ufforumgroup",
   "description": "Bitrix module for user field bind to forum group",
   "type": "bitrix-d7-module",
   "license": "MIT",
@@ -10,7 +10,6 @@
     }
   ],
   "extra": {
-    "installer-vendor": "smotrovalilit",
     "installer-name": "ufforumgroup"
   },
   "require": {
