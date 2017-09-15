@@ -3,6 +3,6 @@
 ### Установка ###
 
 ```
-composer require SmotrovaLilit/bitrix-ufforumgroup
+composer require smotrova-lilit/bitrix-ufforumgroup
 
 ```
