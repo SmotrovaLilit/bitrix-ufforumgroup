@@ -10,7 +10,8 @@
     }
   ],
   "extra": {
-    "installer-name": "smotrovalilit.ufforumgroup"
+    "installer-vendor": "smotrovalilit",
+    "installer-name": "ufforumgroup"
   },
   "require": {
     "php": ">=5.3.0",
