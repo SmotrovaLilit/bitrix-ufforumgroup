@@ -1,6 +1,6 @@
 <?php
 
-namespace LS\UFTypeForumGroup\General;
+namespace SmotrovaLilit\UFTypeForumGroup\General;
 
 /**
  * Class CForumGroupEnum
@@ -14,14 +14,12 @@ class CForumGroupEnum extends \CDBResult
     public function GetList()
     {
         $rs = false;
-        if(\CModule::IncludeModule('forum'))
-        {
+        if (\CModule::IncludeModule('forum')) {
             $rs = \CForumGroup::GetListEx([], [
                 'LID' => LANGUAGE_ID
             ]);
 
-            if($rs)
-            {
+            if ($rs) {
                 $rs = new CForumGroupEnum($rs);
             }
         }
@@ -34,12 +32,13 @@ class CForumGroupEnum extends \CDBResult
      * @param bool $use_tilda
      * @return array
      */
-    public function GetNext($bTextHtmlAuto=true, $use_tilda=true)
+    public function GetNext($bTextHtmlAuto = true, $use_tilda = true)
     {
         $r = parent::GetNext($bTextHtmlAuto, $use_tilda);
 
-        if($r)
+        if ($r) {
             $r["VALUE"] = $r["NAME"];
+        }
 
         return $r;
     }

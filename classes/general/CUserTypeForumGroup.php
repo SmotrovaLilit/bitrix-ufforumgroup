@@ -1,6 +1,6 @@
 <?php
 
-namespace LS\UFTypeForumGroup\General;
+namespace SmotrovaLilit\UFTypeForumGroup\General;
 
 IncludeModuleLangFile(__FILE__);
 
@@ -28,7 +28,7 @@ class CUserTypeForumGroup extends \CUserTypeEnum
     {
         return [
             "USER_TYPE_ID" => "forum_group",
-            "CLASS_NAME" => \LS\UFTypeForumGroup\General\CUserTypeForumGroup::className(),
+            "CLASS_NAME" => \SmotrovaLilit\UFTypeForumGroup\General\CUserTypeForumGroup::className(),
             "DESCRIPTION" => Loc::getMessage("LS_USER_TYPE_FG_DESCRIPTION"),
             "BASE_TYPE" => "int",
         ];
@@ -43,18 +43,20 @@ class CUserTypeForumGroup extends \CUserTypeEnum
     {
         $height = intval($arUserField["SETTINGS"]["LIST_HEIGHT"]);
         $disp = $arUserField["SETTINGS"]["DISPLAY"];
-        if ($disp != "CHECKBOX" && $disp != "LIST")
+        if ($disp != "CHECKBOX" && $disp != "LIST") {
             $disp = "LIST";
+        }
 
         $groupId = intval($arUserField["SETTINGS"]["DEFAULT_VALUE"]);
-        if ($groupId <= 0)
+        if ($groupId <= 0) {
             $groupId = "";
+        }
 
-        return array(
+        return [
             "DISPLAY" => $disp,
             "LIST_HEIGHT" => ($height < 1 ? 1 : $height),
             "DEFAULT_VALUE" => $groupId,
-        );
+        ];
     }
 
     /**
@@ -68,12 +70,13 @@ class CUserTypeForumGroup extends \CUserTypeEnum
     {
         $result = '';
 
-        if ($bVarsFromForm)
+        if ($bVarsFromForm) {
             $value = $GLOBALS[$htmlControlData["NAME"]]["DEFAULT_VALUE"];
-        elseif (is_array($userFieldData))
+        } elseif (is_array($userFieldData)) {
             $value = $userFieldData["SETTINGS"]["DEFAULT_VALUE"];
-        else
+        } else {
             $value = "";
+        }
 
         if (\CModule::IncludeModule('forum')) {
             $result .= '
@@ -95,12 +98,13 @@ class CUserTypeForumGroup extends \CUserTypeEnum
             $result .= '</select>';
         }
 
-        if ($bVarsFromForm)
+        if ($bVarsFromForm) {
             $value = $GLOBALS[$htmlControlData["NAME"]]["DISPLAY"];
-        elseif (is_array($userFieldData))
+        } elseif (is_array($userFieldData)) {
             $value = $userFieldData["SETTINGS"]["DISPLAY"];
-        else
+        } else {
             $value = "LIST";
+        }
         $result .= '
 		<tr>
 			<td class="adm-detail-valign-top">' . Loc::getMessage("LS_USER_TYPE_FG_ENUM_DISPLAY") . ':</td>
@@ -111,12 +115,13 @@ class CUserTypeForumGroup extends \CUserTypeEnum
 		</tr>
 		';
 
-        if ($bVarsFromForm)
+        if ($bVarsFromForm) {
             $value = intval($GLOBALS[$htmlControlData["NAME"]]["LIST_HEIGHT"]);
-        elseif (is_array($userFieldData))
+        } elseif (is_array($userFieldData)) {
             $value = intval($userFieldData["SETTINGS"]["LIST_HEIGHT"]);
-        else
+        } else {
             $value = 5;
+        }
         $result .= '
 		<tr>
 			<td>' . Loc::getMessage("LS_USER_TYPE_FG_LIST_HEIGHT") . ':</td>
@@ -154,10 +159,11 @@ class CUserTypeForumGroup extends \CUserTypeEnum
     {
         $res = '';
 
-        if (is_array($userFieldData["VALUE"]))
+        if (is_array($userFieldData["VALUE"])) {
             $val = $userFieldData["VALUE"];
-        else
+        } else {
             $val = [$userFieldData["VALUE"]];
+        }
 
         $val = array_filter($val, "strlen");
 
@@ -167,8 +173,9 @@ class CUserTypeForumGroup extends \CUserTypeEnum
                 'LID' => LANGUAGE_ID
             ]);
 
-            while ($ar = $rs->Fetch())
+            while ($ar = $rs->Fetch()) {
                 $res .= $ar["NAME"] . "\r\n";
+            }
         }
 
         return $res;
