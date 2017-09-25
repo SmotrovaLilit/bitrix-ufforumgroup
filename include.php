@@ -1,7 +1,6 @@
 <?php
 IncludeModuleLangFile(__FILE__);
 
-
 CModule::AddAutoloadClasses(
     'smotrovalilit.ufforumgroup',
     [
@@ -9,5 +8,3 @@ CModule::AddAutoloadClasses(
         'SmotrovaLilit\UFTypeForumGroup\General\CForumGroupEnum' => 'classes/general/CForumGroupEnum.php'
     ]
 );
-
-?>

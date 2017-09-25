@@ -2,46 +2,48 @@
 
 namespace SmotrovaLilit\UFTypeForumGroup\General;
 
+use CDBResult;
+use CForumGroup;
+use CModule;
+
 /**
  * Class CForumGroupEnum
  */
-class CForumGroupEnum extends \CDBResult
+class CForumGroupEnum extends CDBResult
 {
     /**
      * Получить список значений списка
-     * @return bool|\CDBResult|CForumGroupEnum
+     * @return bool|CDBResult|CForumGroupEnum
      */
     public function GetList()
     {
-        $rs = false;
-        if (\CModule::IncludeModule('forum')) {
-            $rs = \CForumGroup::GetListEx([], [
-                'LID' => LANGUAGE_ID
-            ]);
-
-            if ($rs) {
-                $rs = new CForumGroupEnum($rs);
-            }
+        if (!CModule::IncludeModule('forum')) {
+            return false;
         }
-        return $rs;
+
+        $rs = CForumGroup::GetListEx([], ['LID' => LANGUAGE_ID]);
+        if (!$rs) {
+            return false;
+        }
+
+        return new self($rs);
     }
 
     /**
      * Получить следующий элемент в списке
      * @param bool $bTextHtmlAuto
      * @param bool $use_tilda
-     * @return array
+     * @return array|false
      */
     public function GetNext($bTextHtmlAuto = true, $use_tilda = true)
     {
         $r = parent::GetNext($bTextHtmlAuto, $use_tilda);
-
-        if ($r) {
-            $r["VALUE"] = $r["NAME"];
+        if (!$r) {
+            return false;
         }
+
+        $r['VALUE'] = $r['NAME'];
 
         return $r;
     }
-
-
 }

@@ -1,44 +1,38 @@
 <?php
 use Bitrix\Main\Localization\Loc;
+use SmotrovaLilit\UFTypeForumGroup\General\CUserTypeForumGroup;
 
 IncludeModuleLangFile(__FILE__);
 
-include __DIR__ . '/../include.php';
+require __DIR__ . '/../include.php';
 
-if (class_exists("smotrovalilit_ufforumgroup")) {
+if (class_exists('smotrovalilit_ufforumgroup')) {
     return;
 }
 
 class smotrovalilit_ufforumgroup extends CModule
 {
-    var $MODULE_ID = "smotrovalilit.ufforumgroup";
-    var $MODULE_VERSION;
-    var $MODULE_VERSION_DATE;
-    var $MODULE_NAME;
-    var $MODULE_DESCRIPTION;
-    var $MODULE_CSS;
-
-    var $errors;
+    public $errors;
 
     /**
      * constructor.
      */
     public function __construct()
     {
+        $this->MODULE_ID = 'smotrovalilit.ufforumgroup';
+
         $arModuleVersion = array();
 
-        $path = str_replace("\\", "/", __FILE__);
-        $path = substr($path, 0, strlen($path) - strlen("/index.php"));
-        include($path . "/version.php");
+        require __DIR__ . '/version.php';
 
-        if (is_array($arModuleVersion) && array_key_exists("VERSION", $arModuleVersion)) {
-            $this->MODULE_VERSION = $arModuleVersion["VERSION"];
-            $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
+        if (is_array($arModuleVersion) && array_key_exists('VERSION', $arModuleVersion)) {
+            $this->MODULE_VERSION = $arModuleVersion['VERSION'];
+            $this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
         }
 
-        $this->MODULE_NAME = Loc::getMessage("LS_INST_MODULE_NAME");
-        $this->MODULE_DESCRIPTION = Loc::getMessage("LS_INST_MODULE_DESC");
-        $this->PARTNER_NAME = Loc::getMessage("LS_INST_MODULE_PARTNER");
+        $this->MODULE_NAME = Loc::getMessage('LS_INST_MODULE_NAME');
+        $this->MODULE_DESCRIPTION = Loc::getMessage('LS_INST_MODULE_DESC');
+        $this->PARTNER_NAME = Loc::getMessage('LS_INST_MODULE_PARTNER');
     }
 
 
@@ -47,9 +41,9 @@ class smotrovalilit_ufforumgroup extends CModule
      */
     public function InstallDB()
     {
-        RegisterModule("smotrovalilit.ufforumgroup");
-        RegisterModuleDependences("main", "OnUserTypeBuildList", "smotrovalilit.ufforumgroup",
-            \SmotrovaLilit\UFTypeForumGroup\General\CUserTypeForumGroup::className(), "GetUserTypeDescription");
+        RegisterModule('smotrovalilit.ufforumgroup');
+        RegisterModuleDependences('main', 'OnUserTypeBuildList', 'smotrovalilit.ufforumgroup',
+            CUserTypeForumGroup::class, 'GetUserTypeDescription');
 
         return true;
     }
@@ -59,9 +53,9 @@ class smotrovalilit_ufforumgroup extends CModule
      */
     public function UnInstallDB()
     {
-        UnRegisterModuleDependences("main", "OnUserTypeBuildList", "smotrovalilit.ufforumgroup",
-            \SmotrovaLilit\UFTypeForumGroup\General\CUserTypeForumGroup::className(), "GetUserTypeDescription");
-        UnRegisterModule("smotrovalilit.ufforumgroup");
+        UnRegisterModuleDependences('main', 'OnUserTypeBuildList', 'smotrovalilit.ufforumgroup',
+            CUserTypeForumGroup::class, 'GetUserTypeDescription');
+        UnRegisterModule('smotrovalilit.ufforumgroup');
 
         return true;
     }
@@ -78,7 +72,7 @@ class smotrovalilit_ufforumgroup extends CModule
             $this->InstallDB();
         }
 
-        $APPLICATION->IncludeAdminFile(Loc::getMessage("LS_INST_INST_TITLE"), __DIR__ . "/step.php");
+        $APPLICATION->IncludeAdminFile(Loc::getMessage('LS_INST_INST_TITLE'), __DIR__ . '/step.php');
     }
 
     /**
@@ -88,9 +82,7 @@ class smotrovalilit_ufforumgroup extends CModule
     {
         global $APPLICATION;
         $this->UnInstallDB();
-        $APPLICATION->IncludeAdminFile(Loc::getMessage("LS_INST_UNINST_TITLE"), __DIR__ . "/unstep.php");
+        $APPLICATION->IncludeAdminFile(Loc::getMessage('LS_INST_UNINST_TITLE'), __DIR__ . '/unstep.php');
     }
 
 }
-
-?>
