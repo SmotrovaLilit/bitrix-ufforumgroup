@@ -1,11 +1,13 @@
 <?php
 
-namespace LS\UFTypeForumGroup\General;
+namespace SmotrovaLilit\UFTypeForumGroup\General;
 
 IncludeModuleLangFile(__FILE__);
 
 
 use Bitrix\Main\Localization\Loc;
+use CForumGroup;
+use CModule;
 
 /**
  * Class CUserTypeForumGroup
@@ -13,24 +15,16 @@ use Bitrix\Main\Localization\Loc;
 class CUserTypeForumGroup extends \CUserTypeEnum
 {
     /**
-     * @return string
-     */
-    public static function className()
-    {
-        return get_called_class();
-    }
-
-    /**
      * Описание пользовательского свойства
      * @return array
      */
     public function GetUserTypeDescription()
     {
         return [
-            "USER_TYPE_ID" => "forum_group",
-            "CLASS_NAME" => \LS\UFTypeForumGroup\General\CUserTypeForumGroup::className(),
-            "DESCRIPTION" => Loc::getMessage("LS_USER_TYPE_FG_DESCRIPTION"),
-            "BASE_TYPE" => "int",
+            'USER_TYPE_ID' => 'forum_group',
+            'CLASS_NAME' => self::class,
+            'DESCRIPTION' => Loc::getMessage('LS_USER_TYPE_FG_DESCRIPTION'),
+            'BASE_TYPE' => 'int',
         ];
     }
 
@@ -41,25 +35,27 @@ class CUserTypeForumGroup extends \CUserTypeEnum
      */
     public function PrepareSettings($arUserField)
     {
-        $height = intval($arUserField["SETTINGS"]["LIST_HEIGHT"]);
-        $disp = $arUserField["SETTINGS"]["DISPLAY"];
-        if ($disp != "CHECKBOX" && $disp != "LIST")
-            $disp = "LIST";
+        $height = (int) $arUserField['SETTINGS']['LIST_HEIGHT'];
+        $display = $arUserField['SETTINGS']['DISPLAY'];
+        if ($display !== 'CHECKBOX' && $display !== 'LIST') {
+            $display = 'LIST';
+        }
 
-        $groupId = intval($arUserField["SETTINGS"]["DEFAULT_VALUE"]);
-        if ($groupId <= 0)
-            $groupId = "";
+        $groupId = (int) $arUserField['SETTINGS']['DEFAULT_VALUE'];
+        if ($groupId <= 0) {
+            $groupId = '';
+        }
 
-        return array(
-            "DISPLAY" => $disp,
-            "LIST_HEIGHT" => ($height < 1 ? 1 : $height),
-            "DEFAULT_VALUE" => $groupId,
-        );
+        return [
+            'DISPLAY' => $display,
+            'LIST_HEIGHT' => $height < 1 ? 1 : $height,
+            'DEFAULT_VALUE' => $groupId,
+        ];
     }
 
     /**
      * Показывает настройки поля
-     * @param bool $userFieldData
+     * @param bool|array $userFieldData
      * @param $htmlControlData
      * @param $bVarsFromForm
      * @return string
@@ -67,61 +63,62 @@ class CUserTypeForumGroup extends \CUserTypeEnum
     public function GetSettingsHTML($userFieldData = false, $htmlControlData, $bVarsFromForm)
     {
         $result = '';
+        $value = '';
 
-        if ($bVarsFromForm)
-            $value = $GLOBALS[$htmlControlData["NAME"]]["DEFAULT_VALUE"];
-        elseif (is_array($userFieldData))
-            $value = $userFieldData["SETTINGS"]["DEFAULT_VALUE"];
-        else
-            $value = "";
+        if ($bVarsFromForm) {
+            $value = $GLOBALS[$htmlControlData['NAME']]['DEFAULT_VALUE'];
+        } elseif (is_array($userFieldData)) {
+            $value = $userFieldData['SETTINGS']['DEFAULT_VALUE'];
+        }
 
-        if (\CModule::IncludeModule('forum')) {
+        if (CModule::IncludeModule('forum')) {
             $result .= '
 			<tr>
-				<td>' . Loc::getMessage("LS_USER_TYPE_FG_DEFAULT_VALUE") . ':</td>
+				<td>' . Loc::getMessage('LS_USER_TYPE_FG_DEFAULT_VALUE') . ':</td>
 				<td>
-					<select name="' . $htmlControlData["NAME"] . '[DEFAULT_VALUE]" size="5">
-						<option value="">' . Loc::getMessage("LS_FG_VALUE_ANY") . '</option>
+					<select name="' . $htmlControlData['NAME'] . '[DEFAULT_VALUE]" size="5">
+						<option value="">' . Loc::getMessage('LS_FG_VALUE_ANY') . '</option>
 			';
 
-            $rs = \CForumGroup::GetListEx([], [
+            $rs = CForumGroup::GetListEx([], [
                 'LID' => LANGUAGE_ID
             ]);
 
             while ($ar = $rs->Fetch()) {
-                $result .= '<option value="' . $ar["ID"] . '"' . ($ar["ID"] == $value ? " selected" : "") . '>' . $ar["NAME"] . '</option>';
+                $result .= '<option value="' . $ar['ID'] . '"' . ($ar['ID'] == $value ? ' selected' : '') . '>' . $ar['NAME'] . '</option>';
             }
 
             $result .= '</select>';
         }
 
-        if ($bVarsFromForm)
-            $value = $GLOBALS[$htmlControlData["NAME"]]["DISPLAY"];
-        elseif (is_array($userFieldData))
-            $value = $userFieldData["SETTINGS"]["DISPLAY"];
-        else
-            $value = "LIST";
+        $value = 'LIST';
+        if ($bVarsFromForm) {
+            $value = $GLOBALS[$htmlControlData['NAME']]['DISPLAY'];
+        } elseif (is_array($userFieldData)) {
+            $value = $userFieldData['SETTINGS']['DISPLAY'];
+        }
         $result .= '
 		<tr>
-			<td class="adm-detail-valign-top">' . Loc::getMessage("LS_USER_TYPE_FG_ENUM_DISPLAY") . ':</td>
+			<td class="adm-detail-valign-top">' . Loc::getMessage('LS_USER_TYPE_FG_ENUM_DISPLAY') . ':</td>
 			<td>
-				<label><input type="radio" name="' . $htmlControlData["NAME"] . '[DISPLAY]" value="LIST" ' . ("LIST" == $value ? 'checked="checked"' : '') . '>' . Loc::getMessage("LS_USER_TYPE_FG_LIST") . '</label><br>
-				<label><input type="radio" name="' . $htmlControlData["NAME"] . '[DISPLAY]" value="CHECKBOX" ' . ("CHECKBOX" == $value ? 'checked="checked"' : '') . '>' . Loc::getMessage("LS_USER_TYPE_FG_CHECKBOX") . '</label><br>
+				<label><input type="radio" name="' . $htmlControlData['NAME'] . '[DISPLAY]" value="LIST" ' . ('LIST' === $value ? 'checked="checked"' : '') . '>' . Loc::getMessage('LS_USER_TYPE_FG_LIST') . '</label><br>
+				<label><input type="radio" name="' . $htmlControlData['NAME'] . '[DISPLAY]" value="CHECKBOX" ' . ('CHECKBOX' === $value ? 'checked="checked"' : '') . '>' . Loc::getMessage('LS_USER_TYPE_FG_CHECKBOX') . '</label><br>
 			</td>
 		</tr>
 		';
 
-        if ($bVarsFromForm)
-            $value = intval($GLOBALS[$htmlControlData["NAME"]]["LIST_HEIGHT"]);
-        elseif (is_array($userFieldData))
-            $value = intval($userFieldData["SETTINGS"]["LIST_HEIGHT"]);
-        else
-            $value = 5;
+        $value = 5;
+        if ($bVarsFromForm) {
+            $value = (int) $GLOBALS[$htmlControlData['NAME']]['LIST_HEIGHT'];
+        } elseif (is_array($userFieldData)) {
+            $value = (int) $userFieldData['SETTINGS']['LIST_HEIGHT'];
+        }
+
         $result .= '
 		<tr>
-			<td>' . Loc::getMessage("LS_USER_TYPE_FG_LIST_HEIGHT") . ':</td>
+			<td>' . Loc::getMessage('LS_USER_TYPE_FG_LIST_HEIGHT') . ':</td>
 			<td>
-				<input type="text" name="' . $htmlControlData["NAME"] . '[LIST_HEIGHT]" size="10" value="' . $value . '">
+				<input type="text" name="' . $htmlControlData['NAME'] . '[LIST_HEIGHT]" size="10" value="' . $value . '">
 			</td>
 		</tr>
 		';
@@ -137,7 +134,7 @@ class CUserTypeForumGroup extends \CUserTypeEnum
     public function GetList($arUserField)
     {
         $result = false;
-        if (\CModule::IncludeModule('forum')) {
+        if (CModule::IncludeModule('forum')) {
             $forumGroupEnum = new CForumGroupEnum();
             $result = $forumGroupEnum->GetList();
         }
@@ -153,25 +150,25 @@ class CUserTypeForumGroup extends \CUserTypeEnum
     public function OnSearchIndex($userFieldData)
     {
         $res = '';
+        $val = [$userFieldData['VALUE']];
 
-        if (is_array($userFieldData["VALUE"]))
-            $val = $userFieldData["VALUE"];
-        else
-            $val = [$userFieldData["VALUE"]];
+        if (is_array($userFieldData['VALUE'])) {
+            $val = $userFieldData['VALUE'];
+        }
 
-        $val = array_filter($val, "strlen");
+        $val = array_filter($val, 'strlen');
 
-        if (count($val) && \CModule::IncludeModule('forum')) {
+        if (count($val) && CModule::IncludeModule('forum')) {
 
-            $rs = \CForumGroup::GetListEx([], [
+            $rs = CForumGroup::GetListEx([], [
                 'LID' => LANGUAGE_ID
             ]);
 
-            while ($ar = $rs->Fetch())
-                $res .= $ar["NAME"] . "\r\n";
+            while ($ar = $rs->Fetch()) {
+                $res .= $ar['NAME'] . "\r\n";
+            }
         }
 
         return $res;
     }
-
 }
